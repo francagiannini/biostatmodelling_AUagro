@@ -8,7 +8,9 @@ This repository contains the materials and curriculum for the **Biostatistical M
 * **Language:** English.
 * **Capacity:** 20 participants (First-come, first-served).
 * **Total Workload:** 125 hours (including preparation and assignments).
-* **Cost:** 300 DKK (includes lunch and coffee).
+
+![Aarhus University Logo](https://international.au.dk/fileadmin/_processed_/0/c/csm_AU_logo_UK_600_62343c9451.png)
+
 
 ## 🗓️ Important Dates & Location
 
@@ -26,6 +28,10 @@ By the end of this course, students will be able to:
 * **Master Experimental Design:** Recognize and statistically handle various research designs.
 * **Statistical Modelling:** Employ methods like General Linear Mixed Models (GLMM).
 * **Communicate Results:** Build informative graphics and report findings according to scientific ethics.
+
+---
+
+![difusion]("/Images/difusion.png")
 
 ---
 
