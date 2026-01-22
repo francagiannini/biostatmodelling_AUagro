@@ -1,3 +1,6 @@
+![](./Images/aulogo_uk_var2_blue.png)
+
+
 # Biostatistical Modelling for Agricultural Science (2026)
 
 This repository contains the materials and curriculum for the **Biostatistical Modelling for Agricultural Science** PhD course. The program focuses on providing PhD students with the tools for rigorous data management and methodological discussion within the context of Agroecological research.
@@ -8,9 +11,6 @@ This repository contains the materials and curriculum for the **Biostatistical M
 * **Language:** English.
 * **Capacity:** 20 participants (First-come, first-served).
 * **Total Workload:** 125 hours (including preparation and assignments).
-
-![Aarhus University Logo](https://international.au.dk/fileadmin/_processed_/0/c/csm_AU_logo_UK_600_62343c9451.png)
-
 
 ## 🗓️ Important Dates & Location
 
@@ -31,7 +31,7 @@ By the end of this course, students will be able to:
 
 ---
 
-![difusion]("/Images/difusion.png")
+![](./Images/Difussion26.png)
 
 ---
 
