@@ -7,27 +7,27 @@ This repository contains the materials and curriculum for the **Biostatistical M
 
 ## 📋 Course Overview
 
-* **ECTS Credits:** 5.0 (Full course) / 3.5 (Main course only).
+* **ECTS:** 5.0 (Full course) / 3.5 (Main course only).
 * **Language:** English.
 * **Capacity:** 20 participants (First-come, first-served).
-* **Total Workload:** 125 hours (including preparation and assignments).
+* **Total workload:** 125 hours (including preparation and assignments).
 
 ## 🗓️ Important Dates & Location
 
-* **Course Dates:** February 3–13, 2026 (09:00 - 17:00).
-* **Assessment Date:** February 27, 2026 (Mandatory; in-person or online).
-* **Registration Deadline:** January 16, 2026.
+* **Course dates:** February 3–13, 2026 (09:00 - 17:00).
+* **Assessment date:** February 27, 2026 (Mandatory; in-person or online).
 * **Location:** Aarhus University Viborg, Blichers Alle 20, 8830 Tjele, Denmark.
 
 ---
 
 ## 🎯 Learning Outcomes
 By the end of this course, students will be able to:
-* **Manage R Software:** Reshape and merge complex data types.
-* **Apply Exploratory Tools:** Discover patterns through data visualization and statistics.
-* **Master Experimental Design:** Recognize and statistically handle various research designs.
-* **Statistical Modelling:** Employ methods like General Linear Mixed Models (GLMM).
-* **Communicate Results:** Build informative graphics and report findings according to scientific ethics.
+* Choose and apply exploratory data tools to discover patterns in data.
+* Recognise experimental designs and appropriately handle them statistically.
+* Employ common statistical methods (e.g., General Linear Mixed Models, GLMM) for data analysis and understand their strengths and weaknesses.
+* Describe, interpret and discuss the results and shortcomings of an analysis based on statistical modelling.
+* Build attractive and informative graphics and tables from applied statistical analysis.
+* Report the results of an applied statistical analysis according to ethics of science.
 
 ---
 
@@ -40,18 +40,18 @@ By the end of this course, students will be able to:
 ### Module 1: Handling Ag Data through R (Pre-workshop)
 *Necessary to complete 5 ECTS (1.5 ECTS, 48 hours)*.
 
-1.  **Getting Started:** Introduction to R and RStudio, syntax, and work projects.
-2.  **Data Frames:** Reading/importing data (Excel, etc.), sorting, and creating subsets.
+1.  **Getting started:** Introduction to R and RStudio, syntax, and work projects.
+2.  **Data frames:** Reading/importing data (Excel, etc.), sorting, and creating subsets.
 3.  **Graphics:** Base R `plot()` and advanced plotting with `ggplot2`.
 4.  **Functions:** Defining custom functions, loops, and the `apply` family.
-5.  **Descriptive Statistics:** Variability, central tendency, skew, kurtosis, and data management.
+5.  **Descriptive statistics:** Variability, central tendency, skew, kurtosis, and data management.
 
 ### Module 2: Hands-on Data - Applied Statistics (Main Course)
 *(3.5 ECTS, 90 hours)*.
 
-1.  **Exploratory Analysis:** Qualitative and quantitative data types.
-2.  **Statistical Modelling:** Notation, uncertainty, and covariate modeling.
-3.  **Experimental Design:** Randomization, replication, factorial structures, crossed/nested factors, and split-plot designs.
+1.  **Exploratory analysis:** Qualitative and quantitative data types.
+2.  **Statistical modelling:** Notation, uncertainty, and covariate modeling.
+3.  **Experimental design:** Randomization, replication, factorial structures, crossed/nested factors, and split-plot designs.
 4.  **Mixed Models (GLMM):** Simple/multiple linear regression, random effects, BLUPs, and longitudinal data.
 5.  **Communication:** Reproducible research (Git/GitHub), Open Data, and good presentation practices.
 
@@ -59,7 +59,7 @@ By the end of this course, students will be able to:
 
 ## 👩‍🏫 Teaching Team
 * **Maarit Mäenpää:** Statistician, Dept. of Agroecology.
-* * **Simon Riley:** Statistician, Dept. of Agroecology.
+* **Simon Riley:** Statistician, Dept. of Agroecology.
 * **Franca Giannini-Kurina:** Postdoc, Soil Fertility Section.
 
 
@@ -97,13 +97,13 @@ The course is structured into a 3-day R Pre-workshop followed by a week-long int
 ---
 
 ## Daily Routine
-* **09:00 – 10:30:** Morning Session A (Lectures & Coding).
+* **09:00 – 10:30:** Morning session A (Lectures & Coding).
 * **10:30 – 10:45:** Coffee Break.
-* **10:45 – 12:00:** Morning Session B (Practical Work).
+* **10:45 – 12:00:** Morning session B (Practical Work).
 * **12:00 – 13:00:** Lunch Break.
-* **13:00 – 14:30:** Afternoon Session A (Group Activities/Lectures).
+* **13:00 – 14:30:** Afternoon session A (Group Activities/Lectures).
 * **14:30 – 15:00:** Coffee Break.
-* **15:00 – 17:00:** Afternoon Session B & Co-working (Data Wrangling & Support).
+* **15:00 – 17:00:** Afternoon session B & Co-working (Data Wrangling & Support).
 
 ## 📜 License
 This repository is licensed under the **MIT License** for code and **CC BY 4.0** for educational content.
