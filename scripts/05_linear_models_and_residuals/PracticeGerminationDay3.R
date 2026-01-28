@@ -9,7 +9,7 @@ library(emmeans)
 # Example 1 -------------------------------------------------------------------
 # Load your data
 # Replace 'path_to_your_data.csv' with the actual path to your data file
-atriplex <- read.table('2025 Biostatistical modeling for Ag. Science/Day 3/Atriplex.txt', 
+atriplex <- read.table('scripts/05_linear_models_and_residuals/data/Atriplex.txt', 
                        header=TRUE, sep='\t')
 
 # Inspect the first few rows of the data
