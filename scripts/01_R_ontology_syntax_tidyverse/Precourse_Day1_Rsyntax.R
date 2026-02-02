@@ -1,4 +1,4 @@
-# PhD Course, Biostatistical modeling in Ag. Science, Pre-course, Day 1
+# PhD Course, Biostatistical modeling in Ag. Science, Pre-course, Day -2
 # R syntax ---- 
 # Aim: My first R script.
 
@@ -6,7 +6,7 @@
 #
 #
 
-# Read through this script, and run the code given.
+# Read through this script, and run the code given. 
 # You will be presented with Tasks along the way - try to work them out based on 
 # what you've learned. 
 
@@ -54,7 +54,14 @@ getwd()
 
 # Change the path below (in the quotation marks) into the correct path to the folder you are 
 # using in your own computer.
-setwd("C:/Users/au721810/Git Repositories/Stats101/2025 Biostatistical modeling for Ag. Science/Pre-course Day 1")
+setwd("C:/Users/auXXXXX/OneDrive - Aarhus universitet/00. Files/04. Teaching/PhD/Biostatistical modeling for Ag. Science/")
+
+#
+## TIP! ##
+# When you write paths in Rstudio, it tries to help you. Set your cursor in the line below,
+# after the /-symbol, and click Tab. It will give you options for folders to navigate to.  
+"C:/"
+
 
 # If you struggle to find the path to the folder you wish to use, you can do so by 
 # point-and-click method. Follow the steps below.
@@ -98,7 +105,7 @@ Sys.time()
 
 # You just took a timestamp of your computer's idea of what date and 
 # time it was when you run the code. 
-# Based on that, how many minutes of 2025 has passed up until the time 
+# Based on that, how many minutes of 2026 has passed up until the time 
 # you just extracted?
 # Use simple maths, but let R be your calculator to get the answer!
 
@@ -187,6 +194,8 @@ lunch_review <- c(3, 2.5, 3, 2, 5)
 
 # Character vector
 day_of_week <- c("Mon", "Tue", "Wed", "Thu", "Fri")
+# Note that characters need to be distinguished from object names by 
+# wrapping them in quotation marks!
 
 # Logical vector
 working_from_home <- c(FALSE, FALSE, FALSE, FALSE, TRUE)
@@ -197,7 +206,7 @@ working_from_home <- c(FALSE, FALSE, FALSE, FALSE, TRUE)
 # Example:
 # Transform vector lunch_review from its current scale (0-5) to percentage of the 
 # maximum score
-lunch_review_perc <- (lunch_review/5)*100
+lunch_review_perc <- (lunch_review/max(lunch_review))*100
 lunch_review_perc
 
 # The operation on a vector can also depend on another vector;
@@ -208,7 +217,6 @@ coffee_review <- c(1,1,1,1,4)
 # Calculation
 average_goodness_of_day <- (lunch_review+coffee_review)/2
 average_goodness_of_day
-# What are the values in the new vector?
 
 # Let's print these with names based on another vector (day_of_week)
 setNames(average_goodness_of_day, day_of_week)
@@ -276,7 +284,7 @@ matrix1 + matrix2
 # Or substract
 matrix1 - matrix2
 
-# You can do matrix algebra in more complex ways as well, but we won't go there here
+# You can do matrix algebra in more complex ways as well, but we're not in a math class!
 # If you're interested, check this as one example: https://css18.github.io/linear-algebra.html
 #
 
@@ -398,6 +406,8 @@ str(week_data)
 
 # Let's change it:
 week_data$Weekday <- factor(week_data$Weekday)
+
+# And see whether the change took place:
 str(week_data)
 
 # For the sake of an example, let's miss-classify something:
@@ -413,8 +423,12 @@ str(week_data)
 
 # Exploratory illustrations ----
 # You can also summarise a variable in your data in different ways 
+
 hist(week_data$Lunch)
 # This is a histogram. What does it show you?
+
+plot(week_data$Lunch, week_data$Coffee)
+# This is the basic plot function. What does it do?
 
 #
 #

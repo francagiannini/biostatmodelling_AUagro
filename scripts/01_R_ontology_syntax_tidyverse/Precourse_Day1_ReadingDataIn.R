@@ -14,17 +14,22 @@
 # need to install extra packages, and then load them in R. 
 
 # In the next task, we will need package called "readxl". Let's install and load this. 
+# You can navigate it through point-and-click through the bottom right window of Rstudio.
+# Packages > Install > follow the instructions in the pop-up window.
+# BUT! You can also simply use a line of code. 
 
-# Alternatively, install with code:
+# Install with code:
 install.packages("readxl")
 
-# You only install once! You now already have this in your computer, and you only need to tell 
-# R to start using it. Once you've done this, you should silence the installation code, or remove
-# it from your script.
+# You only install once! You now already have this package in your computer, and you 
+# only need to tell R to start using it. Once you've done this, you should silence 
+# the installation code, or remove it from your script.
 
 # To load the package in R use function "library"
 library(readxl) # (this is a package for reading excel files)
 # This part, you do again every time you restart R. 
+# A good practice is to have a section in the beginning of your script for loading
+# the packages you use.
 
 
 #
@@ -47,8 +52,7 @@ library(readxl) # (this is a package for reading excel files)
 
 # There are multiple ways of reading in data in R. Here are a couple short-cuts.
 
-# First, find a file called "Biostat2025_BachmaierNitrogen.xlsx" in Sharepoint and save it to 
-# your own computer.
+# First, find a file called "Biostat2025_BachmaierNitrogen.xlsx" in GitHub.
 
 #
 #
@@ -76,13 +80,13 @@ data
 
 # Select the file you wish to use by point-and-click:
 data <- read_xlsx(file.choose())
-# This has opened a new window on your computer. Make sure you open it, and use it to select the 
-# file you wish to open.
+# This has opened a new window on your computer. Make sure you select a file in 
+# the window before continuing.
 data
 
-# Note: In the last two examples, we created an object called "data" - but R doesn't allow you to 
-# have two objects of the same name. In the second example, you are overwriting the first "data" 
-# you created! 
+# Note: In the last two examples, we created an object called "data" - but R doesn't 
+# allow you to have two objects of the same name. In the second example, you are 
+# overwriting the first "data" you created! 
 
 #
 #
@@ -99,42 +103,44 @@ data
 
 # Method 4: READ DATA WITH CODE ----
 
-# Note - this is the most reproducible, trackable and recommendable practice: This is what you 
-# should aim for for your own projects! 
+# Note - this is the most reproducible, trackable and recommendable practice: 
+# This is what youshould aim for for your own projects! 
 
 # How to do this depends on the type of your file. These are for the three most common options - 
 # comma separated values file (csv), text files (txt), and excel sheet (xlsx).
 
-# Go ahead and download files Biostat2025_BridgesCucumber.txt and Biostat2025_.csv from Sharepoint into
-# the same location you downloaded the xlsx file earlier.
+# From GitHub, find files Biostat2025_BridgesCucumber.txt and Biostat2025_.csv 
+# Make sure they are in your computer, in the same location you downloaded the xlsx file earlier.
 
 #
 # csv-file ----
 # Check the type of data you are working with, and use this code if your data is in csv-format.
 
-corn <- read.csv("data/Biostat2025_NassCornTexas.csv")
+corn <- read.csv("Biostat2025_NassCornTexas.csv")
+# If this doesn't work, have you checked that the path to the file is correct. 
+# It should include any subfolders after this location:
+getwd()
 
 #
 # txt-file ----
 
-cucumber <- read.table("data/Biostat2025_BridgesCucumber.txt", header=TRUE)
+cucumber <- read.table("Biostat2025_BridgesCucumber.txt", header=TRUE)
 # What happens if you include/don't include the header=TRUE?
 
 # 
 # Excel file ----
 
-# There are multiple packages that allow you to read in excel-sheets. We use "readxl" that we 
-# installed and loaded in before.
+# There are multiple packages that allow you to read in excel-sheets. We use "readxl" 
+# that we installed and loaded in before.
 
-# read_excel() is a function we use from package readxl. Note, we specify the folder the datasheet 
-# is in, followed by dash (/), and then the name of the file.
+# read_excel() is a function we use from package readxl. Note, we specify the folder the 
+# datasheet is in, followed by dash (/), and then the name of the file.
 # For excel sheets, you also need to specify the sheet you wish to read in within the file.
 # Take a look at the code for how this is done. 
 dataxl <- read_excel("data/Biostat2025_BachmaierNitrogen.xlsx", sheet="Data")
 dataxl
 
-# Did it work? Do you actually have a folder called "data" in your computer? Make sure you specify the
-# path to the file as it should be in your own computer.
+# Did it work? Check that the path is correct!
 
 # Let's name the nitrogen data stored in the data-object as something more easy to identify
 nitrogen <- dataxl
@@ -159,7 +165,7 @@ rm()
 
 # You have three datasets - try to look at all of them and make observations with the code below.
 
-# You can look at your entire dataset by clicking at the object in the top right corner of Rstudio.
+# You can look at your entire dataset by clicking at the object in the top right window of Rstudio.
 # You can also print it out in your console by typing its name. 
 
 cucumber
@@ -175,7 +181,7 @@ tail(corn)
 # You can summarise all the columns you have, to get an idea of what your data looks like:
 summary(cucumber)
 
-# Or you can check the structure of your data, including the class of each colum:
+# Or you can check the structure of your data, including the class of each column:
 str(corn)
 # The class specifies whether R thinks each column is numeric, an integer (whole number), 
 # a factor (a categorical variable), or a character (a string of letters)
@@ -200,8 +206,8 @@ cucumber_guardian <- filter(cucumber, gen=="Guardian")
 
 #
 #
-# R has many ways of taking subsets, and just to show you another way of creating the subset 
-# of Guardian data:
+# R has many ways of taking subsets. Here's another way of doing the same as the previous
+# line of code. Subsetting for the Guardian data:
 cucumber_guardian <- cucumber[which(cucumber$gen=="Guardian"),]
 
 # Note 2 things above.
@@ -295,7 +301,7 @@ summary(cucumber)
 
 #
 # TASK 8: ---
-# Nitrogen data also has mistakes. Try to see if you can spot them, and think of a way of fixing them.
+# Nitrogen data also has mistakes. Try to see if you can spot them, and think of a way of fixing them in code.
 
 
 #
