@@ -1,3 +1,5 @@
+getwd()
+setwd("C:/Users/au710823/OneDrive - Aarhus universitet/StatAGRO/BioStatModelling_AGRO/biostatmodelling_AUagro/scripts/02_grammar_of_graphics_ggplot/")
 # Data Analysis and Visualization with Edlinger 2022 Dataset--------
 
 ## Load Required Packages ----
@@ -12,7 +14,7 @@ library(sf)  # Spatial data handling
 # Download the dataset and save it as 'mwd_soc_diggdeeper.xlsx'
 
 # Load the dataset into R
-edlinger_data <- readxl::read_excel("example_data/mwd_soc_diggdeeper.xlsx", 
+edlinger_data <- readxl::read_excel("mwd_soc_diggdeeper.xlsx", 
                                     skip = 1,   # Skip the first row
                                     na = "NA")  # Treat "NA" as missing values
 
@@ -93,6 +95,8 @@ ggarrange(p1, p2,
 
 # Save the combined plot
 ggsave("combined_plot.png", combined_plot)
+
+# Pause ----
 
 ## Step 7: Mapping Data on a European Map-----------
 
