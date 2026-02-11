@@ -19,7 +19,7 @@ library(ggeffects)
 # PN Fox (eds) Statistical Methods for Plant Variety Evaluation.
 # Chapman & Hall, London, UK. pp. 85-116.
 
-gleson <- read.table("2025 Biostatistical modeling for Ag. Science/Day 4/Square.lattice.Gleson.txt", 
+gleson <- read.table("scripts/07_random_effects_and_glmm/Square.lattice.Gleson.txt", 
                      header = TRUE, 
                      sep = "\t") |>
   mutate(Replication = as.factor(Replication),
@@ -158,3 +158,4 @@ blups_df |> ggplot(aes(x = reorder(Variety, BLUP), y = BLUP)) +
   labs(title = "BLUPs for Each Variety",
        x = "Variety",
        y = "BLUP")
+
