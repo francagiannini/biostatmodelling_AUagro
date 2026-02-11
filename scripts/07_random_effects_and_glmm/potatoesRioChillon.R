@@ -1,67 +1,132 @@
-# Load necessary libraries
-library(tidyverse)
-library(readxl)
-library(lme4)
-library(agricolae)
+# 0. Load  libraries ----
+library(tidyverse) # Data manipulation and visualization
+library(agricolae) # Agricultural research tools
+library(glmmTMB)   # Generalized linear mixed models
+library(DHARMa)    # Residual diagnostics for hierarchical models
 
-# If you experience some problems and you are working with the updated version 
-# you can use the following when installing lme4
-# remove.packages("Matrix")
-# remove.packages("lme4")
-# install.packages("lme4", type = "source")
-# library(lme4)
+# 1. The data ----
 
-# Analysis of potatoes in Peru using the Mother/Baby Trial Design
+# Analysis of potatoes in Peru using the Mother/Baby Trial Design.
+# The Mother trial is a central, researcher-managed site.
+# The Baby trials are decentralized, farmer-managed plots.
 data(RioChillon)
 
-# Let's first explore the metadata
-?RioChillon
+# View dataset documentation
+# ?RioChillon
 
-# For this example, we will work with the babies data
-data_g <- RioChillon$babies
+# Split into two datasets for comparison
+chillon_b <- RioChillon$babies
+chillon_m <- RioChillon$mother
 
-head(data_g)
-str(data_g)
+# 2. Variance Component Analysis (VCA) ----
 
-# We first perform a fixed effect model to evaluate if the environment represented 
-# by the farmer has an effect on yield
-mod_fix <- lm(yield ~ farmer, data = data_g)
+# We want to determine how much yield variability is driven by:
+# 1. Genetic factors (clones)
+# 2. Environmental/Management factors (blocks or farmers)
 
-summary(mod_fix)
-anova(mod_fix)
+# First, analyze the mother trial (controlled experimental station)
+moms_vca <- 
+  lme4::lmer(yield ~ 1 + (1 | block) + (1 | clon), 
+             data = chillon_m)
 
-# Now let's fit a mixed model with a random effect on the average 
-mod_ran <- lmer(yield ~ farmer + (1 | clon), data = data_g)
+summary(moms_vca)
+var_comp_moms <- VarCorr(moms_vca)
 
-summary(mod_ran)
+# Second, analyze the baby trials (variable farmer conditions)
+babies_vca <- 
+  lme4::lmer(yield ~ 1 + (1 | farmer) + (1 | clon), 
+             data = chillon_b)
 
-# Obtaining the BLUPs from the fitted model
-ranef(mod_ran)
+summary(babies_vca)
+var_comp_babies <- VarCorr(babies_vca)
 
-# We can also generate a data frame to work further with 
-blups_babies <- ranef(mod_ran)$clon |> # Select the element
-  rownames_to_column("clon") |> # Generate a new variable with the row names which in our case are the clones
-  as.data.frame() |> # Convert to data frame
-  rename("yield_blup_babies" = `(Intercept)`) # Rename the variable to a more convenient name
-
-# Exploring the distribution 
-blups_babies |> ggplot(aes(x = yield_blup_babies)) + 
-  geom_density() +
+# Combine and visualize the variance proportions
+# This shows how genetic influence differs between station and farm environments
+var_comp_moms |> 
+  as_tibble() |>
+  mutate(proportion = vcov / sum(vcov),
+         trial = "moms") |> 
+  bind_rows(var_comp_babies |> 
+              as_tibble() |>
+              mutate(proportion = vcov / sum(vcov),
+                     trial = "babies")) |>
+  rename('component' = 'grp') |> 
+  ggplot(aes(y = proportion, x = trial, fill = component)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = scales::percent(proportion)),
+            position = position_stack(vjust = 0.5)) +
+  labs(title = "Variance components: mother vs. baby trials",
+       x = "Trial type",
+       y = "Proportion of total variance") +
   theme_bw()
 
-# We perform a bar plot with the ranking of BLUPs 
-blups_babies |> ggplot(aes(x = reorder(clon, yield_blup_babies), # Define the clones in x axis but reordered by the BLUP value
-                           y = yield_blup_babies, 
-                           fill = yield_blup_babies)) + 
-  geom_col() +
-  labs(x = "Clon", y = "Yield BLUPs (Babies)") +
+# 3. Evaluating clone performance through BLUPs ----
+
+# Best Linear Unbiased Predictors (BLUPs) allow us to estimate the 
+# genetic potential of each clone while accounting for site/farmer effects.
+
+# Fitting the mixed model for baby trials
+mod_babies_tmb <- glmmTMB(yield ~ farmer + (1 | clon), 
+                          data = chillon_b, 
+                          family = gaussian())
+
+# Residual analysis with DHARMa
+# Simulates residuals to check for model assumptions in mixed models
+res_babies <- simulateResiduals(mod_babies_tmb)
+plot(res_babies) 
+
+# Extracting BLUPs for clones in baby trials
+blups_babies <- ranef(mod_babies_tmb)$cond$clon |> 
+  rownames_to_column("clon") |> 
+  as.data.frame() |> 
+  rename("yield_blup_babies" = `(Intercept)`)
+
+# Fitting the mixed model for the mother trial
+mod_mother_tmb <- glmmTMB(yield ~ block + (1 | clon), 
+                          data = chillon_m, 
+                          family = gaussian())
+
+# Check residuals for the mother model
+res_mother <- simulateResiduals(mod_mother_tmb)
+plot(res_mother)
+
+# Extracting BLUPs for clones in the mother trial
+blups_mother <- ranef(mod_mother_tmb)$cond$clon |> 
+  rownames_to_column("clon") |> 
+  as.data.frame() |> 
+  rename("yield_blup_mother" = `(Intercept)`) |>
+  arrange(desc(yield_blup_mother))
+
+# Preview top-performing clones from the mother trial
+print(head(blups_mother))
+
+# 4. Comparative analysis ----
+
+# Combine both sets of BLUPs to see if clones perform consistently 
+# across both research environments and farmer fields.
+comparison_df <- inner_join(blups_babies, blups_mother, by = "clon")
+
+# Visualize the ranking of clones in both trials
+comparison_df |> 
+  pivot_longer(cols = c(yield_blup_babies, yield_blup_mother),
+               names_to = 'trial',
+               values_to = 'yield_blup') |> 
+  ggplot(aes(x = reorder(clon, yield_blup), y = yield_blup)) +
+  geom_col(width = 0.5) +
+  facet_grid(trial ~ .) +
+  labs(title = "Clone ranking by trial type",
+       x = "Clone",
+       y = "Yield BLUP") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Final correlation plot: Do Mother trial results predict Baby trial results?
+ggplot(comparison_df, aes(x = yield_blup_mother, y = yield_blup_babies)) +
+  geom_point(shape = "🥔", size = 4) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "darkgrey") +
+  geom_text(aes(label = clon), vjust = -1.2, size = 3) +
+  labs(title = "Correlation of BLUPs: mother vs. baby trials",
+       subtitle = "Each potato represents a specific clone",
+       x = "Mother trial BLUP",
+       y = "Baby trial BLUP") +
   theme_bw()
-
-## Activity ----
-## Work on the model with the mother data fitting a mixed model with a random effect on the average 
-## Extract the BLUPs and make a table with the ranking of the clones based on the BLUPs
-## Then copy the BLUPs estimations of the babies and mothers and compare them in a plot and explain what this means agronomicaly 
-
-# For this example, we will work with the mother data
-data_m <- RioChillon$mother
-

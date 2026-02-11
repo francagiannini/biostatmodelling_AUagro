@@ -67,7 +67,7 @@ apple_mod_2 <- glmmTMB(yield ~ gen*stock*spacing + (1|rep/spacing/stock),
 # than formal tests of these model assumptions. For ANOVA-type models (i.e.
 # those with only categorical predictors), some of the most useful diagnostic
 # plots are:
-check_model(apple_mod_2, 
+performance::check_model(apple_mod_2, 
             check = c('linearity', 'homogeneity', 'qq', 'normality'),
             detrend = F)
 
@@ -87,7 +87,8 @@ apple_qres <- simulateResiduals(apple_mod_2, plot = T)
 
 # These simulated quantile residuals can be converted to normal residuals
 # if one wants to:
-apple_res_2 <- resid(apple_qres, quantileFunction = qnorm, outlierValues = c(-5, 5))
+apple_res_2 <- resid(apple_qres, quantileFunction = qnorm, 
+                     outlierValues = c(-5, 5))
 resid_auxpanel(apple_res_2, apple_pred)
 
 # Only the performance package, however, has tools for checking the
