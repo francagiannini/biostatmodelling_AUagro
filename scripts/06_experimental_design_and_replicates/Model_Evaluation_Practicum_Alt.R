@@ -38,14 +38,14 @@ apple |>
   print(n = Inf)
 
 apple |> 
-  ggplot(aes(x = stock, color = gen, y = yield))+
-  facet_grid(cols = vars(spacing))+
+  ggplot(aes(x = stock, color = gen, y = yield)) +
+  facet_grid(cols = vars(spacing)) +
   geom_boxplot()
 
 ##### Model Development & Evaluation ####
 # Start with the simplest model which is consistent with the data architecture
 # (the 3x4x2 factorial treatment structure and the split-split-plot RCBD design)
-apple_mod_1 <- glmmTMB(yield ~ gen*stock*spacing + (1|rep/spacing/stock), 
+apple_mod_1 <- glmmTMB(yield ~ spacing*stock*gen + (1|rep/spacing/stock), 
                        data = apple, family = gaussian(link = 'identity'), 
                        REML = T)
 
@@ -56,7 +56,7 @@ vignette('troubleshooting', package = 'glmmTMB')
 
 # Let's try supplying the optimization algorithm with starting values for the
 # random effects variance parameters (which glmmTMB calls "theta"):
-apple_mod_2 <- glmmTMB(yield ~ gen*stock*spacing + (1|rep/spacing/stock), 
+apple_mod_2 <- glmmTMB(yield ~ spacing*stock*gen + (1|rep/spacing/stock), 
                        data = apple, family = gaussian(link = 'identity'), 
                        REML = T, start = list(theta = c(10, 10, 10)))
 
@@ -67,14 +67,14 @@ apple_mod_2 <- glmmTMB(yield ~ gen*stock*spacing + (1|rep/spacing/stock),
 # than formal tests of these model assumptions. For ANOVA-type models (i.e.
 # those with only categorical predictors), some of the most useful diagnostic
 # plots are:
-performance::check_model(apple_mod_2, 
+check_model(apple_mod_2, 
             check = c('linearity', 'homogeneity', 'qq', 'normality'),
             detrend = F)
 
 # Another package providing tools for residual diagnostic plots is the 
 # ggResidpanel package
 apple_res <- resid(apple_mod_2)
-apple_pred <- predict(apple_mod_2)
+apple_pred <- fitted(apple_mod_2)
 resid_auxpanel(apple_res, apple_pred)
 
 boxplot(apple_res ~ apple$rep)
@@ -87,38 +87,25 @@ apple_qres <- simulateResiduals(apple_mod_2, plot = T)
 
 # These simulated quantile residuals can be converted to normal residuals
 # if one wants to:
-apple_res_2 <- resid(apple_qres, quantileFunction = qnorm, 
-                     outlierValues = c(-5, 5))
+apple_res_2 <- resid(apple_qres, quantileFunction = qnorm, outlierValues = c(-5, 5))
 resid_auxpanel(apple_res_2, apple_pred)
 
 # Only the performance package, however, has tools for checking the
 # distributional assumptions for the random effects:
 check_model(apple_mod_2, check = c('reqq'))
 
-# None of the plots strongly suggested heteroscedasticity,
+# None of the plots strongly suggested any issues,
 # but for the sake of illustration, let us fit a model for 
-# which the residual variance differs for each genotype, and
-# see if model fit is improved:
-apple_mod_3 <- glmmTMB(yield ~ gen*stock*spacing + (1|rep/spacing/stock), 
-                       data = apple, family = gaussian(link = 'identity'), 
-                       REML = T, start = list(theta = c(10, 10, 10)), 
-                       dispformula = ~ gen)
-
-# Now we get a different warning, about "NA/NaN function evaluation". Go back to
-# the troubleshooting vignette and determine if this is a major issue or
-# something we can safely ignore. In the space below, either create code for a
-# new model or make a note explaining why this warning can be ignored.
-
-
+# which the data is assumed gamma distributed instead of 
+# normally distributed, and see if model fit is improved:
+apple_mod_3 <- glmmTMB(yield ~ spacing*stock*gen + (1|rep/spacing/stock), 
+                       data = apple, family = Gamma(link = 'log'), 
+                       REML = T, start = list(theta = c(10, 10, 10)))
 
 # Now, let's first repeat the check of the residuals and other model
 # assumptions
 check_model(apple_mod_3, check = c('linearity', 'homogeneity', 'normality', 'qq'), 
             detrend = F)
-
-apple_res_3 <- resid(apple_mod_3)
-apple_pred_3 <- predict(apple_mod_3)
-resid_auxpanel(apple_res_3, apple_pred_3)
 
 # Now, we can use information criteria to compare model fit
 AIC(apple_mod_2, apple_mod_3)

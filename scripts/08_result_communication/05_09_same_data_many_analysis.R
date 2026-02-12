@@ -1,6 +1,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(glmmTMB)
 
 # Load data ----
 url <- "https://raw.githubusercontent.com/francagiannini/plot_validation_rCTOOL/main/data_lte/Soil_parameters_Soil_C_N.txt"
@@ -23,58 +24,14 @@ soil_plots <-
          year=as.numeric(year),
          year_cat=as.factor(year),
          year_cont=as.numeric(year),
+         year2=year^2,
          plotyear=interaction(Sample_ID,year),
-         treatment=interaction(Straw_Rate,Cover_Crop,sep="_")) #|> 
-  filter(!year==1981) |>
-  filter(year == min(year) | year == max(year))
+         treatment=interaction(Straw_Rate,Cover_Crop,sep="_")) 
 
 head(soil_plots)
 
 # Exploring alternatives ----
 
-# --- Alternative  1: the treatment approach ----
-
-soil_plots |> 
-  ggplot(aes(
-    x = treatment, y = Topsoil_C_obs, 
-    colour = treatment)) +
-  stat_summary(
-    fun = mean, 
-    fun.min = function(x) mean(x) - sd(x), 
-    fun.max = function(x) mean(x) + sd(x),
-    shape=15, alpha=0.6)+
-  geom_point(position=position_nudge(.2))+
-  #geom_jitter(width = 0.2)+
-  facet_grid(year_cat~. ) +
-  theme_bw()
-
-model_treatment <- lm(Topsoil_C_obs~ treatment + year_cat, data = soil_plots)
-
-summary(model_treatment)
-
-anova(model_treatment)
-
-# --- Alternative 2: the factorial approach ----
-
-soil_plots |>
-  ggplot(aes(x = as.factor(Straw_Rate), y = Topsoil_C_obs, color = Cover_Crop)) +
-  geom_jitter(width = 0.2) +
-    stat_summary(
-      fun = mean, fun.min = function(x) mean(x) - sd(x), 
-      fun.max = function(x) mean(x) + sd(x),
-      shape=15, alpha=0.6, 
-    aes(group = Cover_Crop)) +
-  facet_grid(year_cat~ .) +
-  theme_minimal()
-
-
-model_factorial <- lm(
-  Topsoil_C_obs ~ Straw_Rate + Cover_Crop + Straw_Rate * Cover_Crop + year_cat, 
-                      data = soil_plots)
-
-summary(model_factorial)
-
-anova(model_factorial)
 
 # --- Alternative 3: year as a continuous variable (without interaction) ----
 
@@ -91,13 +48,33 @@ soil_plots |>
   facet_grid(. ~ Straw_Rate) +
   theme_minimal()
 
-model_cont_cov <- lm(
-  Topsoil_C_obs ~ Straw_Rate + Cover_Crop + year_cont, 
-  data = soil_plots)
 
-summary(model_cont_cov)
+soil_plots |> 
+  ggplot(aes(x = year, y = C, color = as.factor(Straw_Rate))) +
+  geom_point() +
+  stat_summary(
+    fun = mean,
+    fun.min = function(x) mean(x) - sd(x),
+    fun.max = function(x) mean(x) + sd(x),
+    shape = 15,
+    alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_grid(. ~ Cover_Crop) +
+  theme_minimal()
 
-anova(model_cont_cov)
+mod.glmm <- glmmTMB(formula = C ~ Straw_Rate + 
+                      Cover_Crop + 
+                      year_cont+ 
+                      Straw_Rate*year_cont+
+                      year2+ (Block),
+                       # + ar1(factweek + 0 | plot), # add ar1 structure as random term to mimic error variance
+                        dispformula = ~ 0, # fix original error variance to 0
+                        REML = TRUE,       # needs to be stated since default = ML
+                        data = soil_plots)
+
+summary(mod.glmm)
+
+car::Anova(mod.glmm)
 
 # --- Alternative 4: year as a continuous variable (with interaction)----
 
