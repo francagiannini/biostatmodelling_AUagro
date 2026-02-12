@@ -9,6 +9,8 @@ library(agridat)
 library(nlme)
 library(performance)
 library(emmeans)
+library(multcomp)
+library(multcompView)
 library(writexl)
 
 # Set global options
@@ -96,5 +98,6 @@ ggplot(oat_cld, aes(x = nitro)) +
   geom_point(aes(y = yield), data = oats, 
              position = position_nudge(.2)) +
   scale_y_continuous(limits = c(0, 180))
+
 
 
