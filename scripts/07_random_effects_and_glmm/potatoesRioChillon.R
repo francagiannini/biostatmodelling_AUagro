@@ -12,7 +12,7 @@ library(DHARMa)    # Residual diagnostics for hierarchical models
 data(RioChillon)
 
 # View dataset documentation
-# ?RioChillon
+?RioChillon
 
 # Split into two datasets for comparison
 chillon_b <- RioChillon$babies
@@ -123,9 +123,10 @@ comparison_df |>
 # Final correlation plot: Do Mother trial results predict Baby trial results?
 ggplot(comparison_df, aes(x = yield_blup_mother, y = yield_blup_babies)) +
   geom_point(shape = "🥔", size = 4) +
+  geom_abline(slope = 1)+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "darkgrey") +
   geom_text(aes(label = clon), vjust = -1.2, size = 3) +
-  labs(title = "Correlation of BLUPs: mother vs. baby trials",
+  labs(title = "Scatter plot of BLUPs: mother vs. baby trials",
        subtitle = "Each potato represents a specific clone",
        x = "Mother trial BLUP",
        y = "Baby trial BLUP") +
