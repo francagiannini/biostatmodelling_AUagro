@@ -80,5 +80,21 @@ write_xlsx(x = oat_results, path = 'Oat Results Tables.xlsx')
 ggsave(filename = 'Oat Results Plot.jpg', plot = oat_plot, device = 'jpg', 
        height = 6, width = 6)
 
+# Appendix: Compact Letter Displays. 
+# Remember, letters are not mandatory! But if you must, here is how
+
+oat_emm <- emmeans(oat_mod, ~ nitro)
+oat_cld <- cld(oat_emm, Letters = LETTERS, reversed = T) |> 
+  as.data.frame() |> 
+  mutate(.group = str_trim(.group)) # remove whitespace
+
+ggplot(oat_cld, aes(x = nitro)) +
+  geom_point(aes(y = emmean), size = 2)+
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
+                width = 0.15) +
+  geom_text(aes(y = upper.CL + 5, label = .group)) +
+  geom_point(aes(y = yield), data = oats, 
+             position = position_nudge(.2)) +
+  scale_y_continuous(limits = c(0, 180))
 
 
