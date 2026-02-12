@@ -31,7 +31,6 @@ horsekicks |>
   geom_col() +
   scale_y_continuous(expand=c(0,0)) 
   
-
 # Model ----
 horse_model <- glmmTMB(count ~ corp + (1|Year),
                      family = poisson(link="log"),
@@ -54,6 +53,8 @@ emm <-
         type="response", # To get the outcome in the scale of the response
         adjust="fdr") # For a more lenient p-value adjustment method
 emm
+
+emmeans(horse_model, ~corp, type="response") |> multcomp::cld() 
 
 # Notice that the pairwise comparisons are given as odds ratios.
 # This is because we have a log-link. If you run the emmeans above without the
