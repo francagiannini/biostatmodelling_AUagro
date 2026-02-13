@@ -64,4 +64,88 @@ emmeans(horse_model, ~corp, type="response") |> multcomp::cld()
 # <1, first corp in order is smaller
 # >1, first corp is larger
 
+#
+#
+# PRACTICE! ----
+
+# Remember the germination examples from Wednesday? Re-do the models, but now
+# with a different probability distribution!
+# Note - also explore the models after fitting them. See whether anything 
+# changes.
+
+
+# EXAMPLE 1 ----
+
+# Load your data
+# Replace 'path_to_your_data.csv' with the actual path to your data file
+atriplex <- read.table('2025 Biostatistical modeling for Ag. Science/Day 3/Atriplex.txt', 
+                       header=TRUE, sep='\t')
+
+# Inspect the first few rows of the data
+head(atriplex)
+
+#Some context
+# https://identify.plantnet.org/the-plant-list/species/Atriplex%20cordobensis%20Gand.%20&%20Stuck./data
+# Data from Atriplex cordobensis, a forage shrub. The experimental units are arranged in complete blocks.
+# Data courtesy of Dr. M. T. Aiazzi, Faculty of Agricultural Sciences, UNC
+
+# Description:
+# Size: Size of the seed
+# Color: seed coat color
+# Germination: Germination percentage
+# Normal.seeding
+# DW: Dry Weight
+# Block: block identification
+
+# The Block is assumed to be continous so I will convert it to a factor
+atriplex <- atriplex |>
+  mutate(Block = factor(Block))
+
+
+# Visualize the data ----
+atriplex |>  
+  ggplot(aes(x = Color, y = Germination, 
+             col=Block)) +
+  geom_point(size=5) +
+  facet_grid(.~Size)+
+  theme_bw()
+
+# Models ----
+# Fit the first mixed linear model using lmer from lme4 package
+# Block is used as a random variable - pay attention to the notation
+# (1|Block) the "1" here refers to the intercept (it means block affects the intercept of the model)
+model1 <- lmer(Germination ~ Color + Size + (1 | Block), 
+               data = atriplex)
+
+#
+#
+#
+
+# EXAMPLE 2 ----
+
+# Data ----
+crowder.seeds <- agridat::crowder.seeds
+head(crowder.seeds)
+# To see more details of the data:
+help(crowder.seeds)
+
+# Visualize the data ----
+crowder.seeds |> 
+  ggplot(aes(x = gen, y = germ / n)) +
+  geom_point() +
+  geom_boxplot(aes(group = gen), alpha = 0.5) +
+  facet_wrap(~ extract) +
+  theme_minimal() +
+  labs(title = "crowder.seeds",
+       x = "Gen",
+       y = "Germination Rate")
+
+
+# Model ----
+# Fit a linear mixed model using glmmTMB
+m1.glmmtmb <- glmmTMB(germ / n ~ gen * extract + (1 | plate),
+                      data = crowder.seeds)
+
+
+#
 # END ----
