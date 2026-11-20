@@ -51,6 +51,7 @@ oat_emm <- emmeans(oat_mod, ~ nitro)
 oat_emm
 
 # Test contrasts
+?trt.vs.ctrl.emmc
 oat_con <- contrast(oat_emm, 'trt.vs.ctrl', ref = 'nitro0')
 oat_con
 
@@ -73,7 +74,7 @@ oat_plot
 # Create a named list of the results tables (must be data.frames)
 oat_results <- list('F test' = oat_ftest, 
                     'Ests' = oat_emm, 
-                    'Tests' = oat_con)
+                    'Contrast' = oat_con)
 
 # write tables as sheets in an excel
 write_xlsx(x = oat_results, path = 'Oat Results Tables.xlsx')
